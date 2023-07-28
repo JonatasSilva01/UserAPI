@@ -1,4 +1,5 @@
 ﻿using CadastroDeUsuario.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -8,8 +9,16 @@ namespace CadastroDeUsuario.Services
 {
     public class TokenServices
     {
-        public string GenereteToken(User user)
+        private IConfiguration _configuration;
+
+        public TokenServices(IConfiguration configuration)
         {
+            _configuration = configuration;
+        }
+
+        public string GenereteToken(User user)
+        {   
+
             Claim[] claims = new Claim[]
             {
                 new Claim("userName", user.UserName),
@@ -19,7 +28,7 @@ namespace CadastroDeUsuario.Services
                 new Claim("loginTimesStamp", DateTime.UtcNow.ToString()),
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("578f38d89a7df5fa9f31f2cec381a638"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SymmetricSecurityKey"]));
 
             var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
