@@ -12,7 +12,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var ConectionString = builder.Configuration.GetConnectionString("CreateCountUser");
+var ConectionString = builder.Configuration["ConnectionStrings:CreateCountUser"];
 builder.Services.AddDbContext<UserContext>(options => options.UseMySql(ConectionString, ServerVersion.AutoDetect(ConectionString)));
 
 // Add auto mapper 
@@ -42,7 +42,7 @@ builder.Services.AddAuthentication(options => { options.DefaultAuthenticateSchem
     .AddJwtBearer(options => { options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters 
     { 
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("578f38d89a7df5fa9f31f2cec381a638")),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["SymmetricSecurityKey"])),
         ValidateAudience = false,
         ValidateIssuer = false,
         ClockSkew = TimeSpan.Zero
